@@ -1,15 +1,17 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { dict, type Locale } from "@/lib/i18n";
 
-type Props = { videos: string[]; start: number; onClose: () => void; buyHref: string; site: string };
+type Props = { videos: string[]; start: number; onClose: () => void; buyHref: string; site: string; lang: Locale };
 
 /**
  * Full-screen video popup. Videos are stacked in a vertical scroll-snap "reel":
  * swipe up/down on mobile (or use the arrows / keyboard on desktop) to move between them.
  * The video in view autoplays; the others pause.
  */
-export default function VideoModal({ videos, start, onClose, buyHref, site }: Props) {
+export default function VideoModal({ videos, start, onClose, buyHref, site, lang }: Props) {
+  const t = dict[lang];
   const list = useRef<HTMLDivElement>(null);
   const [cur, setCur] = useState(start);
 
@@ -58,7 +60,7 @@ export default function VideoModal({ videos, start, onClose, buyHref, site }: Pr
   const multi = videos.length > 1;
 
   return (
-    <div role="dialog" aria-modal="true" aria-label="Product videos" className="fixed inset-0 z-50 h-dvh bg-black">
+    <div role="dialog" aria-modal="true" aria-label={t.videosAria} className="fixed inset-0 z-50 h-dvh bg-black">
       <div ref={list} className="no-scrollbar h-full snap-y snap-mandatory overflow-y-auto overscroll-contain">
         {videos.map((src, i) => (
           <div key={src} className="flex h-full snap-start snap-always items-center justify-center">
@@ -79,20 +81,20 @@ export default function VideoModal({ videos, start, onClose, buyHref, site }: Pr
       {/* top bar */}
       <div className="pointer-events-none absolute inset-x-0 top-0 flex items-center gap-3 bg-gradient-to-b from-black/70 to-transparent p-3 pt-[max(0.75rem,env(safe-area-inset-top))]">
         <span className="pointer-events-auto rounded-full bg-white/15 px-3 py-1.5 text-xs font-semibold text-white backdrop-blur">
-          {multi ? `Video ${cur + 1} / ${videos.length}` : "Video"}
+          {multi ? t.videoOf(cur + 1, videos.length) : t.videoLabel}
         </span>
         <a
           href={buyHref}
           target="_blank"
           rel="sponsored nofollow noopener noreferrer"
-          className="pointer-events-auto ml-auto rounded-full bg-brand px-4 py-2 text-xs font-extrabold text-white shadow-lg"
+          className="pointer-events-auto ms-auto rounded-full bg-brand px-4 py-2 text-xs font-extrabold text-white shadow-lg"
         >
-          Buy on {site || "Store"} →
+          {t.buyOn(site || t.store)} <span className="inline-block rtl:rotate-180">→</span>
         </a>
         <button
           type="button"
           onClick={onClose}
-          aria-label="Close video"
+          aria-label={t.closeVideo}
           className="pointer-events-auto grid h-10 w-10 place-items-center rounded-full bg-white/15 text-white backdrop-blur transition hover:bg-white/30"
         >
           <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
@@ -104,19 +106,19 @@ export default function VideoModal({ videos, start, onClose, buyHref, site }: Pr
       {multi && (
         <>
           {/* position dots (reel style) */}
-          <div className="pointer-events-none absolute right-2 top-1/2 flex -translate-y-1/2 flex-col gap-1.5">
+          <div className="pointer-events-none absolute end-2 top-1/2 flex -translate-y-1/2 flex-col gap-1.5">
             {videos.map((_, i) => (
               <span key={i} className={`w-1.5 rounded-full transition-all ${i === cur ? "h-6 bg-white" : "h-1.5 bg-white/40"}`} />
             ))}
           </div>
           {/* desktop prev/next */}
-          <div className="absolute right-6 top-1/2 hidden -translate-y-1/2 flex-col gap-3 sm:flex">
-            <NavBtn dir="up" disabled={cur === 0} onClick={() => goTo(cur - 1)} />
-            <NavBtn dir="down" disabled={cur === videos.length - 1} onClick={() => goTo(cur + 1)} />
+          <div className="absolute end-6 top-1/2 hidden -translate-y-1/2 flex-col gap-3 sm:flex">
+            <NavBtn dir="up" label={t.prevVideo} disabled={cur === 0} onClick={() => goTo(cur - 1)} />
+            <NavBtn dir="down" label={t.nextVideo} disabled={cur === videos.length - 1} onClick={() => goTo(cur + 1)} />
           </div>
           {cur < videos.length - 1 && (
             <p className="pointer-events-none absolute inset-x-0 bottom-2 animate-bounce text-center text-xs font-semibold text-white/80 sm:hidden">
-              Swipe up for next ↑
+              {t.swipeUp}
             </p>
           )}
         </>
@@ -125,13 +127,13 @@ export default function VideoModal({ videos, start, onClose, buyHref, site }: Pr
   );
 }
 
-function NavBtn({ dir, disabled, onClick }: { dir: "up" | "down"; disabled: boolean; onClick: () => void }) {
+function NavBtn({ dir, label, disabled, onClick }: { dir: "up" | "down"; label: string; disabled: boolean; onClick: () => void }) {
   return (
     <button
       type="button"
       onClick={onClick}
       disabled={disabled}
-      aria-label={dir === "up" ? "Previous video" : "Next video"}
+      aria-label={label}
       className="grid h-11 w-11 place-items-center rounded-full bg-white/15 text-white backdrop-blur transition hover:bg-white/30 disabled:opacity-30"
     >
       <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">

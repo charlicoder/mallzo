@@ -1,6 +1,6 @@
 const API_URL = process.env.API_URL ?? "http://localhost:8765/api";
 
-export type ProductCardData = { slug: string; title: string; images: string[] };
+export type ProductCardData = { slug: string; title: string; title_en: string; title_ar: string; images: string[] };
 export type ProductList = {
   count: number;
   next: string | null;
@@ -25,6 +25,10 @@ export type ProductDetail = {
   asin: string;
   title: string;
   subtitle: string;
+  title_en: string;
+  title_ar: string;
+  subtitle_en: string;
+  subtitle_ar: string;
   brand: string;
   affiliate_link: string;
   affiliate_site: string;
@@ -44,7 +48,8 @@ export const CATEGORIES = [
 ];
 
 async function get<T>(path: string): Promise<T | null> {
-  const res = await fetch(`${API_URL}${path}`, { next: { revalidate: 60 } });
+  // Cached in Next's data cache: one entry per URL, shared by both languages (no ?lang= in the key).
+  const res = await fetch(`${API_URL}${path}`, { next: { revalidate: 300, tags: ["products"] } });
   if (res.status === 404) return null;
   if (!res.ok) throw new Error(`API ${res.status} for ${path}`);
   return res.json();
@@ -58,3 +63,18 @@ export function getProducts(page = 1, q = "", category = "") {
 }
 
 export const getProduct = (slug: string) => get<ProductDetail>(`/products/${slug}/`);
+
+// Pick the text for a language: title_ar for Arabic, title_en for English (with sensible fallbacks).
+const pickText = (lang: string, en: string, ar: string, fallback: string) =>
+  (lang === "ar" ? ar || en : en) || fallback;
+
+export const localizeCard = (p: ProductCardData, lang: string): ProductCardData => ({
+  ...p,
+  title: pickText(lang, p.title_en, p.title_ar, p.title),
+});
+
+export const localizeProduct = (p: ProductDetail, lang: string): ProductDetail => ({
+  ...p,
+  title: pickText(lang, p.title_en, p.title_ar, p.title),
+  subtitle: pickText(lang, p.subtitle_en, p.subtitle_ar, p.subtitle),
+});

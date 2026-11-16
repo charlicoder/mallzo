@@ -35,3 +35,7 @@ body {
 .text-brand-gradient { color: #fc5924; }
 .no-scrollbar::-webkit-scrollbar { display: none; }
 .no-scrollbar { scrollbar-width: none; }
+
+/* Arabic: dedicated font; letter-spacing would break the joined letterforms */
+html[dir="rtl"] body { font-family: var(--font-ar), var(--font-dm), sans-serif; }
+html[dir="rtl"] * { letter-spacing: 0 !important; }

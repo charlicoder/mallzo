@@ -4,6 +4,10 @@ const nextConfig: NextConfig = {
   images: {
     remotePatterns: [{ protocol: "https", hostname: "m.media-amazon.com" }],
   },
+  experimental: {
+    // Keep visited pages in the browser's router cache so switching language / going back is instant.
+    staleTimes: { dynamic: 60, static: 300 },
+  },
   turbopack: {
     rules: {
       "*.css": {

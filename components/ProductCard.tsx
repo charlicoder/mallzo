@@ -4,8 +4,9 @@ import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import type { ProductCardData } from "@/lib/api";
+import type { Locale } from "@/lib/i18n";
 
-export default function ProductCard({ product, index = 0 }: { product: ProductCardData; index?: number }) {
+export default function ProductCard({ product, lang, index = 0 }: { product: ProductCardData; lang: Locale; index?: number }) {
   const { images } = product;
   const [active, setActive] = useState(0);
   const [hovering, setHovering] = useState(false);
@@ -23,7 +24,7 @@ export default function ProductCard({ product, index = 0 }: { product: ProductCa
 
   return (
     <Link
-      href={`/products/${product.slug}`}
+      href={`/${lang}/products/${product.slug}`}
       onMouseEnter={() => setHovering(true)}
       onMouseLeave={stop}
       onFocus={() => setHovering(true)}

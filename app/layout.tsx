@@ -1,35 +1,27 @@
 import type { Metadata, Viewport } from "next";
 import { DM_Sans, Noto_Sans_Arabic } from "next/font/google";
-import { notFound } from "next/navigation";
-import "../globals.css";
+import "./globals.css";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
-import { dict, dirOf, hasLocale, locales } from "@/lib/i18n";
+import { dict, dirOf } from "@/lib/i18n";
+import { getLocale } from "@/lib/locale";
 
 const dmSans = DM_Sans({ variable: "--font-dm", subsets: ["latin"] });
 const notoArabic = Noto_Sans_Arabic({ variable: "--font-ar", subsets: ["arabic"] });
 
 export const viewport: Viewport = { themeColor: "#f7f4f4" };
 
-export function generateStaticParams() {
-  return locales.map((lang) => ({ lang }));
-}
-
-export async function generateMetadata({ params }: LayoutProps<"/[lang]">): Promise<Metadata> {
-  const { lang } = await params;
-  if (!hasLocale(lang)) return {};
-  const t = dict[lang];
+export async function generateMetadata(): Promise<Metadata> {
+  const t = dict[await getLocale()];
   return {
     metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000"),
     title: { default: t.siteTitle, template: "%s | Mallzo" },
     description: t.siteDescription,
-    alternates: { languages: Object.fromEntries(locales.map((l) => [l, `/${l}`])) },
   };
 }
 
-export default async function RootLayout({ children, params }: LayoutProps<"/[lang]">) {
-  const { lang } = await params;
-  if (!hasLocale(lang)) notFound();
+export default async function RootLayout({ children }: LayoutProps<"/">) {
+  const lang = await getLocale();
 
   return (
     <html lang={lang} dir={dirOf(lang)} className={`${dmSans.variable} ${notoArabic.variable} h-full antialiased`}>

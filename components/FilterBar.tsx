@@ -23,16 +23,16 @@ export default function FilterBar({ lang, category, q, count }: { lang: Locale; 
       const qs = new URLSearchParams();
       if (category) qs.set("category", category);
       if (text.trim()) qs.set("q", text.trim());
-      router.replace(`/${lang}${qs.size ? `?${qs}` : ""}`, { scroll: false });
+      router.replace(`/${qs.size ? `?${qs}` : ""}`, { scroll: false });
     }, 350);
     return () => clearTimeout(t);
-  }, [text, q, category, lang, router]);
+  }, [text, q, category, router]);
 
   const tabHref = (slug: string) => {
     const qs = new URLSearchParams();
     if (slug) qs.set("category", slug);
     if (q) qs.set("q", q);
-    return `/${lang}${qs.size ? `?${qs}` : ""}`;
+    return `/${qs.size ? `?${qs}` : ""}`;
   };
   const tabs = [{ slug: "", label: t.all }, ...CATEGORIES.map((c) => ({ slug: c.slug, label: t.categories[c.slug] ?? c.label }))];
 

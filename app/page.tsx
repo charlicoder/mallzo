@@ -1,13 +1,12 @@
 import Link from "next/link";
-import { notFound } from "next/navigation";
 import FilterBar from "@/components/FilterBar";
 import ProductCard from "@/components/ProductCard";
 import { getProducts, localizeCard } from "@/lib/api";
-import { dict, hasLocale } from "@/lib/i18n";
+import { dict } from "@/lib/i18n";
+import { getLocale } from "@/lib/locale";
 
-export default async function Home({ params, searchParams }: PageProps<"/[lang]">) {
-  const { lang } = await params;
-  if (!hasLocale(lang)) notFound();
+export default async function Home({ searchParams }: PageProps<"/">) {
+  const lang = await getLocale();
   const t = dict[lang];
 
   const sp = await searchParams;
@@ -17,7 +16,7 @@ export default async function Home({ params, searchParams }: PageProps<"/[lang]"
   const data = await getProducts(page, q, category).catch(() => undefined);
 
   const href = (p: number) =>
-    `/${lang}?${new URLSearchParams({ ...(category && { category }), ...(q && { q }), page: String(p) })}`;
+    `/?${new URLSearchParams({ ...(category && { category }), ...(q && { q }), page: String(p) })}`;
 
   return (
     <section className="mx-auto max-w-7xl px-4 py-6 sm:px-8 sm:py-8">
@@ -27,11 +26,11 @@ export default async function Home({ params, searchParams }: PageProps<"/[lang]"
         {data === undefined ? (
           <Empty emoji="🔌" title={t.loadFail} text={t.loadFailHint} />
         ) : data === null || data.results.length === 0 ? (
-          <Empty emoji="🔍" title={t.noProducts} text={t.noProductsHint} action={{ href: `/${lang}`, label: t.browseAll }} />
+          <Empty emoji="🔍" title={t.noProducts} text={t.noProductsHint} action={{ href: "/", label: t.browseAll }} />
         ) : (
           <div className="grid grid-cols-2 gap-x-4 gap-y-8 sm:grid-cols-3 sm:gap-x-8 sm:gap-y-12 xl:grid-cols-4">
             {data.results.map((p, i) => (
-              <ProductCard key={p.slug} lang={lang} product={localizeCard(p, lang)} index={i} />
+              <ProductCard key={p.slug} product={localizeCard(p, lang)} index={i} />
             ))}
           </div>
         )}

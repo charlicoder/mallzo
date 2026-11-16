@@ -1,0 +1,37 @@
+@import "tailwindcss";
+
+:root {
+  --background: #f7f4f4;
+  --foreground: #303438;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-brand: #fc5924;
+  --color-brand-pink: #fc5924;
+  --color-brand-orange: #fc5924;
+  /* Freshcap-inspired warm neutrals (override slate) */
+  --color-slate-50: #fbf8f6;
+  --color-slate-100: #efe8e4;
+  --color-slate-200: #e1d6d1;
+  --color-slate-300: #c1b6b0;
+  --color-slate-400: #9d918b;
+  --color-slate-500: #6f6762;
+  --color-slate-600: #5a5551;
+  --color-slate-700: #46484b;
+  --color-slate-800: #303438;
+  --color-slate-900: #1f1f1f;
+  --font-sans: var(--font-dm), ui-sans-serif, system-ui, sans-serif;
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans);
+}
+
+.bg-brand-gradient { background-color: #fc5924; }
+.text-brand-gradient { color: #fc5924; }
+.no-scrollbar::-webkit-scrollbar { display: none; }
+.no-scrollbar { scrollbar-width: none; }

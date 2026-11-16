@@ -1,4 +1,7 @@
-const API_URL = process.env.API_URL ?? "http://localhost:8765/api";
+// Set API_URL in the host's environment. In production we fall back to the public API instead of
+// localhost, which can never work on a hosted server.
+const API_URL =
+  process.env.API_URL ?? (process.env.NODE_ENV === "production" ? "https://api.mallzo.shop/api" : "http://localhost:8765/api");
 
 export type ProductCardData = { slug: string; title: string; title_en: string; title_ar: string; images: string[] };
 export type ProductList = {

@@ -49,7 +49,7 @@ export default function ProductView({ product, lang }: { product: ProductDetail;
               key={variant?.id}
               ref={scroller}
               onScroll={onScroll}
-              className="no-scrollbar flex aspect-[4/5] snap-x snap-mandatory overflow-x-auto overscroll-x-contain rounded-3xl bg-slate-100 ring-1 ring-slate-200"
+              className="no-scrollbar flex aspect-[4/5] snap-x snap-mandatory overflow-x-auto overscroll-x-contain rounded-3xl bg-white ring-1 ring-slate-200"
             >
               {images.map((img, i) => (
                 <div key={img.url} className="relative h-full w-full shrink-0 snap-center">
@@ -59,7 +59,7 @@ export default function ProductView({ product, lang }: { product: ProductDetail;
                     fill
                     priority={i === 0}
                     sizes="(min-width:1024px) 45vw, 100vw"
-                    className="object-cover"
+                    className="object-contain p-4"
                   />
                 </div>
               ))}
@@ -105,11 +105,11 @@ export default function ProductView({ product, lang }: { product: ProductDetail;
                 onClick={() => goTo(i)}
                 aria-label={t.showImage(i + 1)}
                 aria-current={i === ii}
-                className={`relative aspect-[4/5] w-16 shrink-0 overflow-hidden rounded-xl bg-slate-100 transition lg:w-full ${
+                className={`relative aspect-[4/5] w-16 shrink-0 overflow-hidden rounded-xl bg-white transition lg:w-full ${
                   i === ii ? "ring-2 ring-brand ring-offset-2 ring-offset-[#f7f4f4]" : "opacity-70 ring-1 ring-slate-200 hover:opacity-100"
                 }`}
               >
-                <Image src={img.url} alt="" fill sizes="80px" className="object-cover" />
+                <Image src={img.url} alt="" fill sizes="80px" className="object-contain p-1" />
               </button>
             ))}
             {videos.length > 0 && (
@@ -165,7 +165,7 @@ export default function ProductView({ product, lang }: { product: ProductDetail;
                   } ${v.unavailable ? "opacity-50" : ""}`}
                 >
                   {v.swatch_image || v.images[0]?.url ? (
-                    <Image src={v.swatch_image || v.images[0].url} alt="" fill sizes="64px" className="object-cover" />
+                    <Image src={v.swatch_image || v.images[0].url} alt="" fill sizes="64px" className="object-contain p-0.5" />
                   ) : (
                     <span className="grid h-full place-items-center px-1 text-[10px] font-semibold">{v.label}</span>
                   )}

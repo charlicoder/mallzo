@@ -46,7 +46,7 @@ export type ProductDetail = {
 export const CATEGORIES = [
   { slug: "apparel", label: "Apparel" },
   { slug: "footwear-bags", label: "Footwear & Bags" },
-  { slug: "tech-audio", label: "Tech & Audio" },
+  { slug: "beauty-health", label: "Beauty, Skincare & Health Care" },
   { slug: "home-living", label: "Home & Living" },
 ];
 
@@ -58,12 +58,17 @@ async function get<T>(path: string): Promise<T | null> {
   return res.json();
 }
 
-export function getProducts(page = 1, q = "", category = "") {
+export function getProducts(page = 1, q = "", category = "", sub = "") {
   const qs = new URLSearchParams({ page: String(page) });
   if (q) qs.set("q", q);
   if (category) qs.set("category", category);
+  if (sub) qs.set("sub", sub);
   return get<ProductList>(`/products/?${qs}`);
 }
+
+export const getHero = (category: string) => get<ProductCardData[]>(`/hero/?category=${encodeURIComponent(category)}`);
+export type CategoryStats = Record<string, { count: number; subs: Record<string, number> }>;
+export const getCategoryStats = () => get<CategoryStats>("/categories/");
 
 export const getProduct = (slug: string) => get<ProductDetail>(`/products/${slug}/`);
 

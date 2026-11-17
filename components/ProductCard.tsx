@@ -30,7 +30,7 @@ export default function ProductCard({ product, index = 0 }: { product: ProductCa
       onBlur={stop}
       className="group block focus-visible:outline-none"
     >
-      <div className="relative aspect-[3/4] overflow-hidden rounded-[1.75rem] bg-slate-200/60 transition group-focus-visible:ring-2 group-focus-visible:ring-brand">
+      <div className="relative aspect-[3/4] overflow-hidden rounded-[1.75rem] bg-white transition group-focus-visible:ring-2 group-focus-visible:ring-brand">
         {images.map((src, i) => {
           // First image loads immediately; the rest only after the first hover.
           if (i > 0 && !hovering && active === 0) return null;
@@ -43,7 +43,7 @@ export default function ProductCard({ product, index = 0 }: { product: ProductCa
               sizes="(min-width:1280px) 24vw, (min-width:1024px) 30vw, (min-width:640px) 33vw, 50vw"
               priority={index < 4 && i === 0}
               loading={index < 8 && i === 0 ? "eager" : undefined}
-              className={`object-cover transition-opacity duration-500 ${i === active ? "opacity-100" : "opacity-0"}`}
+              className={`object-contain p-3 transition-opacity duration-500 ${i === active ? "opacity-100" : "opacity-0"}`}
             />
           );
         })}

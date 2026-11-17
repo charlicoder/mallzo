@@ -1,75 +1,83 @@
 import Link from "next/link";
-import FilterBar from "@/components/FilterBar";
+import BrandHero from "@/components/BrandHero";
 import ProductCard from "@/components/ProductCard";
-import { getProducts, localizeCard } from "@/lib/api";
+import ProductListing from "@/components/ProductListing";
+import ScrollRow from "@/components/ScrollRow";
+import SearchForm from "@/components/SearchForm";
+import { getHero, getProducts, localizeCard } from "@/lib/api";
 import { dict } from "@/lib/i18n";
 import { getLocale } from "@/lib/locale";
+import { MENU } from "@/lib/taxonomy";
 
+const ROW_SIZE = 12;
+
+// Landing page: one horizontally scrolling row per category. A search (?q=) shows a flat grid instead.
 export default async function Home({ searchParams }: PageProps<"/">) {
   const lang = await getLocale();
   const t = dict[lang];
-
   const sp = await searchParams;
-  const q = typeof sp.q === "string" ? sp.q : "";
-  const category = typeof sp.category === "string" ? sp.category : "";
-  const page = Math.max(1, Number(typeof sp.page === "string" ? sp.page : 1) || 1);
-  const data = await getProducts(page, q, category).catch(() => undefined);
+  const q = typeof sp.q === "string" ? sp.q.trim() : "";
 
-  const href = (p: number) =>
-    `/?${new URLSearchParams({ ...(category && { category }), ...(q && { q }), page: String(p) })}`;
+  if (q) {
+    const page = Math.max(1, Number(typeof sp.page === "string" ? sp.page : 1) || 1);
+    const data = await getProducts(page, q).catch(() => undefined);
+    return (
+      <section className="mx-auto max-w-7xl px-4 py-6 sm:px-8 sm:py-8">
+        <div className="max-w-2xl"><SearchForm lang={lang} defaultValue={q} /></div>
+        <h1 className="mt-6 text-xl font-extrabold sm:text-2xl">{t.searchResults(q)}</h1>
+        <ProductListing
+          lang={lang}
+          data={data}
+          page={page}
+          hrefFor={(p) => `/?${new URLSearchParams({ q, page: String(p) })}`}
+          emptyHref="/"
+        />
+      </section>
+    );
+  }
+
+  const [hero, rows] = await Promise.all([
+    getHero("").catch(() => null),
+    Promise.all(
+    MENU.map(async (c) => ({ slug: c.slug, data: await getProducts(1, "", c.slug).catch(() => undefined) })),
+    ),
+  ]);
+  const failed = rows.every((r) => r.data === undefined);
+  const visible = rows.filter((r) => r.data && r.data.results.length > 0);
 
   return (
     <section className="mx-auto max-w-7xl px-4 py-6 sm:px-8 sm:py-8">
-      <FilterBar lang={lang} category={category} q={q} count={data?.count} />
-
-      <div className="pt-8 sm:pt-10">
-        {data === undefined ? (
-          <Empty emoji="🔌" title={t.loadFail} text={t.loadFailHint} />
-        ) : data === null || data.results.length === 0 ? (
-          <Empty emoji="🔍" title={t.noProducts} text={t.noProductsHint} action={{ href: "/", label: t.browseAll }} />
-        ) : (
-          <div className="grid grid-cols-2 gap-x-4 gap-y-8 sm:grid-cols-3 sm:gap-x-8 sm:gap-y-12 xl:grid-cols-4">
-            {data.results.map((p, i) => (
-              <ProductCard key={p.slug} product={localizeCard(p, lang)} index={i} />
-            ))}
+      <BrandHero
+        lang={lang}
+        products={(hero ?? [])
+          .filter((p) => p.images[0])
+          .map((p) => ({ slug: p.slug, title: localizeCard(p, lang).title, image: p.images[0] }))}
+      />
+      <div className="space-y-10 pt-10 sm:space-y-14 sm:pt-14">
+      {failed ? (
+        <ProductListing lang={lang} data={undefined} page={1} hrefFor={() => "/"} emptyHref="/" />
+      ) : visible.length === 0 ? (
+        <ProductListing lang={lang} data={null} page={1} hrefFor={() => "/"} emptyHref="/" />
+      ) : (
+        visible.map((r, ri) => (
+          <div key={r.slug}>
+            <div className="mb-4 flex items-end justify-between gap-4 border-b border-slate-200 pb-3 sm:mb-5">
+              <h2 className="text-xl font-extrabold tracking-tight sm:text-2xl">{t.categories[r.slug]}</h2>
+              <Link href={`/${r.slug}`} className="whitespace-nowrap text-sm font-semibold text-brand hover:underline">
+                {t.viewAll} <span className="inline-block rtl:rotate-180">→</span>
+              </Link>
+            </div>
+            <ScrollRow lang={lang}>
+              {r.data!.results.slice(0, ROW_SIZE).map((p, i) => (
+                <div key={p.slug} className="w-[44%] shrink-0 snap-start sm:w-[30%] lg:w-[23.5%]">
+                  <ProductCard product={localizeCard(p, lang)} index={ri === 0 ? i : 99} />
+                </div>
+              ))}
+            </ScrollRow>
           </div>
-        )}
-      </div>
-
-      {data && (data.previous || data.next) && (
-        <nav className="mt-12 flex items-center justify-center gap-3" aria-label={t.pagination}>
-          {data.previous && (
-            <PageLink href={href(page - 1)}>
-              <span className="inline-block rtl:rotate-180">←</span> {t.prev}
-            </PageLink>
-          )}
-          <span className="text-sm font-semibold text-slate-500">{t.page(page)}</span>
-          {data.next && (
-            <PageLink href={href(page + 1)}>
-              {t.next} <span className="inline-block rtl:rotate-180">→</span>
-            </PageLink>
-          )}
-        </nav>
+        ))
       )}
+      </div>
     </section>
-  );
-}
-
-function PageLink({ href, children }: { href: string; children: React.ReactNode }) {
-  return (
-    <Link href={href} className="rounded-xl bg-white px-5 py-2.5 text-sm font-semibold text-brand shadow-sm ring-1 ring-slate-200 transition hover:bg-brand hover:text-white">
-      {children}
-    </Link>
-  );
-}
-
-function Empty({ emoji, title, text, action }: { emoji: string; title: string; text: string; action?: { href: string; label: string } }) {
-  return (
-    <div className="rounded-3xl bg-white py-16 text-center ring-1 ring-slate-200">
-      <div className="text-5xl">{emoji}</div>
-      <p className="mt-3 text-lg font-bold">{title}</p>
-      <p className="text-sm text-slate-500">{text}</p>
-      {action && <Link href={action.href} className="mt-5 inline-block rounded-full bg-brand px-6 py-2.5 text-sm font-bold text-white">{action.label}</Link>}
-    </div>
   );
 }

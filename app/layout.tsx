@@ -8,7 +8,7 @@ import { getLocale } from "@/lib/locale";
 import { abs, SITE_NAME, SITE_URL } from "@/lib/site";
 
 const dmSans = DM_Sans({ variable: "--font-dm", subsets: ["latin"] });
-const notoArabic = Noto_Sans_Arabic({ variable: "--font-ar", subsets: ["arabic"] });
+const notoArabic = Noto_Sans_Arabic({ variable: "--font-ar", subsets: ["arabic"], preload: false });
 
 export const viewport: Viewport = { themeColor: "#f7f4f4" };
 

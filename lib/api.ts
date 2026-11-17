@@ -53,7 +53,7 @@ export const CATEGORIES = [
 
 async function get<T>(path: string): Promise<T | null> {
   // Cached in Next's data cache: one entry per URL, shared by both languages (no ?lang= in the key).
-  const res = await fetch(`${API_URL}${path}`, { next: { revalidate: 300, tags: ["products"] } });
+  const res = await fetch(`${API_URL}${path}`, { next: { revalidate: 600, tags: ["products"] } });
   if (res.status === 404) return null;
   if (!res.ok) throw new Error(`API ${res.status} for ${path}`);
   return res.json();

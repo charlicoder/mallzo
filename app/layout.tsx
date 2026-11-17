@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { DM_Sans, Noto_Sans_Arabic } from "next/font/google";
 import "./globals.css";
+import Analytics, { AnalyticsNoScript } from "@/components/Analytics";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { dict, dirOf } from "@/lib/i18n";
@@ -41,9 +42,11 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html lang={lang} dir={dirOf(lang)} className={`${dmSans.variable} ${notoArabic.variable} h-full antialiased`}>
       <body className="min-h-full flex flex-col" suppressHydrationWarning>
+        <AnalyticsNoScript />
         <Header lang={lang} />
         <main className="flex-1">{children}</main>
         <Footer lang={lang} />
+        <Analytics />
       </body>
     </html>
   );

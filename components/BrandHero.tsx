@@ -63,7 +63,7 @@ export default function BrandHero({ lang, products }: { lang: Locale; products: 
                     fill
                     sizes="(min-width: 1024px) 22vw, 25vw"
                     priority={i < 2}
-                    loading={i < 2 ? "eager" : "lazy"}
+                    loading="eager"
                     className="object-contain p-2"
                   />
                 </Link>

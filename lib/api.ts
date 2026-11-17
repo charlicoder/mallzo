@@ -35,6 +35,7 @@ export type ProductDetail = {
   brand: string;
   affiliate_link: string;
   affiliate_site: string;
+  category?: string;
   category_path: string;
   categories: string[];
   tags: string[];
@@ -66,7 +67,13 @@ export function getProducts(page = 1, q = "", category = "", sub = "") {
   return get<ProductList>(`/products/?${qs}`);
 }
 
-export const getHero = (category: string) => get<ProductCardData[]>(`/hero/?category=${encodeURIComponent(category)}`);
+// Hero slides. If the API predates /hero/ (404) or it fails, fall back to the first products of the category.
+export async function getHero(category: string): Promise<ProductCardData[]> {
+  const hero = await get<ProductCardData[]>(`/hero/?category=${encodeURIComponent(category)}`).catch(() => null);
+  if (hero) return hero;
+  const list = await getProducts(1, "", category).catch(() => null);
+  return (list?.results ?? []).filter((p) => p.images[0]).slice(0, 5);
+}
 export type CategoryStats = Record<string, { count: number; subs: Record<string, number> }>;
 export const getCategoryStats = () => get<CategoryStats>("/categories/");
 

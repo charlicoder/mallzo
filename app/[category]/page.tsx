@@ -4,15 +4,30 @@ import FilterBar from "@/components/FilterBar";
 import HeroSlider from "@/components/HeroSlider";
 import ProductListing from "@/components/ProductListing";
 import { getCategoryStats, getHero, getProducts, localizeCard } from "@/lib/api";
+import JsonLd from "@/components/JsonLd";
 import { dict } from "@/lib/i18n";
 import { getLocale } from "@/lib/locale";
+import { breadcrumbLd, pageMeta } from "@/lib/seo";
+import { abs } from "@/lib/site";
 import { findCategory } from "@/lib/taxonomy";
 
-export async function generateMetadata({ params }: PageProps<"/[category]">): Promise<Metadata> {
+export async function generateMetadata({ params, searchParams }: PageProps<"/[category]">): Promise<Metadata> {
   const { category } = await params;
-  if (!findCategory(category)) return {};
-  const t = dict[await getLocale()];
-  return { title: t.categories[category], description: t.taglines[category], alternates: { canonical: `/${category}` } };
+  const menu = findCategory(category);
+  if (!menu) return {};
+  const lang = await getLocale();
+  const t = dict[lang];
+  const sp = await searchParams;
+  const sub = typeof sp.sub === "string" && menu.subs.some((s) => s.slug === sp.sub) ? sp.sub : "";
+  const q = typeof sp.q === "string" && sp.q.trim() !== "";
+  const name = sub ? `${t.subs[sub]} — ${t.categories[category]}` : t.categories[category];
+  return pageMeta({
+    title: name,
+    description: `${t.taglines[category]}. ${sub ? t.subs[sub] + " · " : ""}${t.siteDescription}`,
+    path: sub ? `/${category}?sub=${sub}` : `/${category}`,
+    lang,
+    noindex: q,
+  });
 }
 
 export default async function CategoryPage({ params, searchParams }: PageProps<"/[category]">) {
@@ -53,6 +68,26 @@ export default async function CategoryPage({ params, searchParams }: PageProps<"
 
   return (
     <section className="mx-auto max-w-7xl px-4 py-6 sm:px-8 sm:py-8">
+      <JsonLd
+        data={[
+          breadcrumbLd([{ name: t.home, path: "/" }, { name: t.categories[category], path: `/${category}` }]),
+          {
+            "@type": "CollectionPage",
+            name: t.categories[category],
+            description: t.taglines[category],
+            url: abs(`/${category}`),
+            mainEntity: {
+              "@type": "ItemList",
+              itemListElement: (data?.results ?? []).map((p, i) => ({
+                "@type": "ListItem",
+                position: i + 1,
+                url: abs(`/products/${p.slug}`),
+                name: localizeCard(p, lang).title,
+              })),
+            },
+          },
+        ]}
+      />
       <HeroSlider lang={lang} category={category} slides={slides} />
       <FilterBar lang={lang} category={sub} q={q} count={data?.count} tabs={tabs} param="sub" basePath={`/${category}`} hideSearch />
       <ProductListing

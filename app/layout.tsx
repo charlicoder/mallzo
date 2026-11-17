@@ -5,6 +5,7 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { dict, dirOf } from "@/lib/i18n";
 import { getLocale } from "@/lib/locale";
+import { abs, SITE_NAME, SITE_URL } from "@/lib/site";
 
 const dmSans = DM_Sans({ variable: "--font-dm", subsets: ["latin"] });
 const notoArabic = Noto_Sans_Arabic({ variable: "--font-ar", subsets: ["arabic"] });
@@ -12,11 +13,25 @@ const notoArabic = Noto_Sans_Arabic({ variable: "--font-ar", subsets: ["arabic"]
 export const viewport: Viewport = { themeColor: "#f7f4f4" };
 
 export async function generateMetadata(): Promise<Metadata> {
-  const t = dict[await getLocale()];
+  const lang = await getLocale();
+  const t = dict[lang];
   return {
-    metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000"),
+    metadataBase: new URL(SITE_URL),
+    applicationName: SITE_NAME,
     title: { default: t.siteTitle, template: "%s | Mallzo" },
     description: t.siteDescription,
+    keywords: ["affiliate deals", "women's fashion", "handbags", "shoes", "sweaters", "beauty", "home", "best prices", "Mallzo"],
+    openGraph: {
+      type: "website",
+      siteName: SITE_NAME,
+      url: abs("/"),
+      title: t.siteTitle,
+      description: t.siteDescription,
+      locale: lang === "ar" ? "ar_AR" : "en_US",
+      images: [{ url: abs("/opengraph-image"), alt: t.siteTitle }],
+    },
+    twitter: { card: "summary_large_image", title: t.siteTitle, description: t.siteDescription, images: [abs("/opengraph-image")] },
+    robots: { index: true, follow: true, googleBot: { index: true, follow: true, "max-image-preview": "large", "max-snippet": -1 } },
   };
 }
 

@@ -4,12 +4,31 @@ import ProductCard from "@/components/ProductCard";
 import ProductListing from "@/components/ProductListing";
 import ScrollRow from "@/components/ScrollRow";
 import SearchForm from "@/components/SearchForm";
+import type { Metadata } from "next";
+import JsonLd from "@/components/JsonLd";
 import { getHero, getProducts, localizeCard } from "@/lib/api";
 import { dict } from "@/lib/i18n";
 import { getLocale } from "@/lib/locale";
+import { organizationLd, pageMeta, websiteLd } from "@/lib/seo";
 import { MENU } from "@/lib/taxonomy";
 
 const ROW_SIZE = 12;
+
+export async function generateMetadata({ searchParams }: PageProps<"/">): Promise<Metadata> {
+  const lang = await getLocale();
+  const t = dict[lang];
+  const sp = await searchParams;
+  const q = typeof sp.q === "string" ? sp.q.trim() : "";
+  // Search-result pages are thin/duplicate content: keep them out of the index.
+  return pageMeta({
+    title: q ? t.searchResults(q) : t.siteTitle,
+    description: t.siteDescription,
+    path: "/",
+    lang,
+    noindex: !!q,
+    absoluteTitle: !q,
+  });
+}
 
 // Landing page: one horizontally scrolling row per category. A search (?q=) shows a flat grid instead.
 export default async function Home({ searchParams }: PageProps<"/">) {
@@ -47,6 +66,7 @@ export default async function Home({ searchParams }: PageProps<"/">) {
 
   return (
     <section className="mx-auto max-w-7xl px-4 py-6 sm:px-8 sm:py-8">
+      <JsonLd data={[organizationLd(), websiteLd()]} />
       <BrandHero
         lang={lang}
         products={(hero ?? [])
@@ -70,7 +90,7 @@ export default async function Home({ searchParams }: PageProps<"/">) {
             <ScrollRow lang={lang}>
               {r.data!.results.slice(0, ROW_SIZE).map((p, i) => (
                 <div key={p.slug} className="w-[44%] shrink-0 snap-start sm:w-[30%] lg:w-[23.5%]">
-                  <ProductCard product={localizeCard(p, lang)} index={ri === 0 ? i : 99} />
+                  <ProductCard product={localizeCard(p, lang)} index={ri === 0 ? i : ri === 1 && i < 4 ? 4 + i : 99} />
                 </div>
               ))}
             </ScrollRow>

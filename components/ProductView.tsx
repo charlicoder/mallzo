@@ -3,10 +3,11 @@
 import Image from "next/image";
 import { useCallback, useRef, useState } from "react";
 import type { ProductDetail } from "@/lib/api";
+import ShareButton from "./ShareButton";
 import VideoModal from "./VideoModal";
 import { dict, type Locale } from "@/lib/i18n";
 
-export default function ProductView({ product, lang }: { product: ProductDetail; lang: Locale }) {
+export default function ProductView({ product, lang, shareUrl }: { product: ProductDetail; lang: Locale; shareUrl: string }) {
   const t = dict[lang];
   const dir = lang === "ar" ? -1 : 1; // scrollLeft is negative in RTL
   const { variants } = product;
@@ -134,7 +135,10 @@ export default function ProductView({ product, lang }: { product: ProductDetail;
       {/* ───────── Info ───────── */}
       <div className="pb-24 lg:pb-0">
         {product.brand && <p className="text-xs font-bold uppercase tracking-widest text-brand">{product.brand}</p>}
-        <h1 className="mt-2 text-2xl font-extrabold leading-tight tracking-tight sm:text-3xl">{product.title}</h1>
+        <div className="mt-2 flex items-start justify-between gap-3">
+          <h1 className="text-2xl font-extrabold leading-tight tracking-tight sm:text-3xl">{product.title}</h1>
+          <ShareButton lang={lang} url={shareUrl} title={product.title} image={product.variants[0]?.images[0]?.url} />
+        </div>
         {product.category_path && <p className="mt-2 text-xs text-slate-500">{product.category_path.replaceAll(">", "›")}</p>}
 
         {variant?.price && (

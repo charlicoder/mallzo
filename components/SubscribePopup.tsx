@@ -5,7 +5,7 @@ import { LogoMark } from "./Logo";
 import { COUNTRIES, flag } from "@/lib/countries";
 import { dict, type Locale } from "@/lib/i18n";
 
-const SHOW_AFTER_MS = 15_000;
+const SHOW_AFTER_MS = 20_000;
 const SNOOZE_MS = 7 * 24 * 3600 * 1000; // after a close, don't ask again for a week
 const KEY = "mz_subscribe";
 
@@ -22,19 +22,14 @@ const write = (v: string) => {
   } catch {}
 };
 
-const guessCountry = (lang: Locale) => {
-  const region = (typeof navigator !== "undefined" ? navigator.language : "").split("-")[1]?.toUpperCase();
-  if (region && COUNTRIES.some((c) => c[0] === region)) return region;
-  return lang === "ar" ? "AE" : "US";
-};
 
 type Status = "idle" | "sending" | "done" | "invalid" | "error";
 
-// Appears once, 15 seconds after the visitor lands. Collects only a phone number with country code.
+// Appears once, 20 seconds after the visitor lands. Collects only a phone number with country code.
 export default function SubscribePopup({ lang }: { lang: Locale }) {
   const t = dict[lang];
   const [open, setOpen] = useState(false);
-  const [country, setCountry] = useState("US");
+  const [country, setCountry] = useState("KW");
   const [phone, setPhone] = useState("");
   const [status, setStatus] = useState<Status>("idle");
   const input = useRef<HTMLInputElement>(null);
@@ -43,7 +38,6 @@ export default function SubscribePopup({ lang }: { lang: Locale }) {
     const v = read();
     if (v === "done" || (v && Date.now() - Number(v) < SNOOZE_MS)) return;
     const id = setTimeout(() => {
-      setCountry(guessCountry(lang));
       setOpen(true);
     }, SHOW_AFTER_MS);
     return () => clearTimeout(id);

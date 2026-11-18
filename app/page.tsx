@@ -4,7 +4,7 @@ import BrandHero from "@/components/BrandHero";
 import JsonLd from "@/components/JsonLd";
 import SearchForm from "@/components/SearchForm";
 import { GridSkeleton, RowSkeleton } from "@/components/Skeletons";
-import { getHero, getProducts } from "@/lib/api";
+import { getProducts } from "@/lib/api";
 import { dict } from "@/lib/i18n";
 import { getLocale } from "@/lib/locale";
 import { organizationLd, pageMeta, websiteLd } from "@/lib/seo";
@@ -49,14 +49,13 @@ export default async function Home({ searchParams }: PageProps<"/">) {
     );
   }
 
-  const heroP = getHero("").catch(() => []);
   const rows = MENU.map((c) => ({ slug: c.slug, dataP: getProducts(1, "", c.slug).catch(() => undefined) }));
 
   return (
     <section className="mx-auto max-w-7xl px-4 py-6 sm:px-8 sm:py-8">
       <JsonLd data={[organizationLd(), websiteLd()]} />
       <Suspense fallback={<BrandHero lang={lang} products={[]} />}>
-        <HomeHero lang={lang} heroP={heroP} />
+        <HomeHero lang={lang} rows={rows} />
       </Suspense>
       <div className="space-y-10 pt-10 sm:space-y-14 sm:pt-14">
         {rows.map((r, i) => (

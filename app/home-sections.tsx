@@ -8,14 +8,15 @@ import { dict, type Locale } from "@/lib/i18n";
 
 const ROW_SIZE = 12;
 
-export async function HomeHero({ lang, heroP }: { lang: Locale; heroP: Promise<ProductCardData[]> }) {
-  const hero = await heroP;
-  return (
-    <BrandHero
-      lang={lang}
-      products={hero.filter((p) => p.images[0]).map((p) => ({ slug: p.slug, title: localizeCard(p, lang).title, image: p.images[0] }))}
-    />
-  );
+export async function HomeHero({ lang, rows }: { lang: Locale; rows: { slug: string; dataP: Promise<ProductList | null | undefined> }[] }) {
+  // One product from each of four different categories (reuses the row requests, so no extra API calls).
+  const lists = await Promise.all(rows.map((r) => r.dataP));
+  const products = lists
+    .map((l) => l?.results.find((p) => p.images[0]))
+    .filter((p): p is ProductCardData => !!p)
+    .slice(0, 4)
+    .map((p) => ({ slug: p.slug, title: localizeCard(p, lang).title, image: p.images[0] }));
+  return <BrandHero lang={lang} products={products} />;
 }
 
 // One category row. Renders nothing for a category without products.

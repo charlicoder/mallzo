@@ -8,19 +8,47 @@ export const MENU: MenuCategory[] = [
     subs: ["suiting-blazers", "sweaters-cardigans", "tops-tees-blouses", "clothing", "pullovers"].map((slug) => ({ slug })),
   },
   {
-    slug: "footwear-bags",
-    subs: ["womens-shoes", "sneakers-sports", "boots", "handbags", "luxury-bags", "travel-bags", "backpacks"].map((slug) => ({ slug })),
+    slug: "footwear",
+    subs: [
+      { slug: "womens-shoes", icon: "👠" },
+      { slug: "sneakers-sports", icon: "👟" },
+      { slug: "boots", icon: "🥾" },
+      { slug: "heels-pumps", icon: "👡" },
+      { slug: "flats-loafers", icon: "🥿" },
+      { slug: "sandals-slippers", icon: "🩴" },
+    ],
   },
   {
-    slug: "beauty-health",
+    slug: "handbags",
+    subs: [
+      { slug: "tote-shoulder", icon: "👜" },
+      { slug: "crossbody", icon: "🎒" },
+      { slug: "clutches-wallets", icon: "👛" },
+      { slug: "luxury-bags", icon: "💎" },
+      { slug: "travel-bags", icon: "🧳" },
+      { slug: "backpacks", icon: "🎒" },
+    ],
+  },
+  {
+    slug: "beauty-skincare",
     subs: [
       { slug: "skincare", icon: "🧴" },
       { slug: "makeup", icon: "💄" },
       { slug: "hair-care", icon: "💇" },
       { slug: "fragrance", icon: "🌸" },
+      { slug: "nail-care", icon: "💅" },
+      { slug: "bath-body", icon: "🛁" },
+    ],
+  },
+  {
+    slug: "health-care",
+    subs: [
       { slug: "vitamins-supplements", icon: "💊" },
       { slug: "personal-care", icon: "🧼" },
+      { slug: "oral-care", icon: "🦷" },
       { slug: "wellness", icon: "🧘" },
+      { slug: "medical-first-aid", icon: "🩺" },
+      { slug: "fitness-recovery", icon: "🏋️" },
     ],
   },
   {

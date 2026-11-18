@@ -4,6 +4,7 @@ import "./globals.css";
 import Analytics, { AnalyticsNoScript } from "@/components/Analytics";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import SubscribePopup from "@/components/SubscribePopup";
 import { dict, dirOf } from "@/lib/i18n";
 import { getLocale } from "@/lib/locale";
 import { abs, SITE_NAME, SITE_URL } from "@/lib/site";
@@ -46,6 +47,7 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
         <Header lang={lang} />
         <main className="flex-1">{children}</main>
         <Footer lang={lang} />
+        <SubscribePopup lang={lang} />
         <Analytics />
       </body>
     </html>

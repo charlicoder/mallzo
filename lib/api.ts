@@ -46,8 +46,10 @@ export type ProductDetail = {
 
 export const CATEGORIES = [
   { slug: "apparel", label: "Apparel" },
-  { slug: "footwear-bags", label: "Footwear & Bags" },
-  { slug: "beauty-health", label: "Beauty, Skincare & Health Care" },
+  { slug: "footwear", label: "Footwear" },
+  { slug: "handbags", label: "Handbags" },
+  { slug: "beauty-skincare", label: "Beauty & Skincare" },
+  { slug: "health-care", label: "Health Care" },
   { slug: "home-living", label: "Home & Living" },
 ];
 

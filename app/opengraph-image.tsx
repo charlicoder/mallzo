@@ -1,4 +1,5 @@
 import { ImageResponse } from "next/og";
+import { brandMark } from "@/lib/brandMark";
 
 export const alt = "Mallzo — Handpicked style. Best prices.";
 export const size = { width: 1200, height: 630 };
@@ -15,7 +16,7 @@ export default function OgImage() {
         }}
       >
         <div style={{ display: "flex", alignItems: "center", gap: 24 }}>
-          <div style={{ width: 96, height: 96, borderRadius: 48, background: "#fc5924", color: "#fff", fontSize: 60, fontWeight: 700, display: "flex", alignItems: "center", justifyContent: "center" }}>M</div>
+          {brandMark(110)}
           <div style={{ fontSize: 88, fontWeight: 700 }}>mallzo</div>
         </div>
         <div style={{ marginTop: 40, fontSize: 64, fontWeight: 700, lineHeight: 1.1 }}>Handpicked style. Best prices.</div>

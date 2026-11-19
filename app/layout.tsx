@@ -33,6 +33,7 @@ export async function generateMetadata(): Promise<Metadata> {
       images: [{ url: abs("/opengraph-image"), alt: t.siteTitle }],
     },
     twitter: { card: "summary_large_image", title: t.siteTitle, description: t.siteDescription, images: [abs("/opengraph-image")] },
+    icons: { icon: [{ url: "/favicon.ico", sizes: "any" }, { url: "/icon.png", type: "image/png", sizes: "512x512" }], apple: "/apple-icon.png" },
     robots: { index: true, follow: true, googleBot: { index: true, follow: true, "max-image-preview": "large", "max-snippet": -1 } },
   };
 }

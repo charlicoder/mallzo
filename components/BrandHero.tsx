@@ -16,10 +16,10 @@ export default function BrandHero({ lang, products }: { lang: Locale; products: 
     <>
       <section
         aria-label={t.welcomeAria}
-        className="relative overflow-hidden rounded-[2rem] bg-gradient-to-br from-[#fff3ec] via-[#ffe6da] to-[#fdd0bb] px-5 py-8 sm:px-10 sm:py-12 lg:px-14 lg:py-14"
+        className="relative overflow-hidden rounded-[2rem] bg-gradient-to-br from-[#fff1f2] via-[#ffe0e4] to-[#ffc6cf] px-5 py-8 sm:px-10 sm:py-12 lg:px-14 lg:py-14"
       >
         <div className="pointer-events-none absolute -end-20 -top-20 h-72 w-72 rounded-full bg-brand/15 blur-3xl" />
-        <div className="pointer-events-none absolute -bottom-24 start-1/3 h-64 w-64 rounded-full bg-amber-300/20 blur-3xl" />
+        <div className="pointer-events-none absolute -bottom-24 start-1/3 h-64 w-64 rounded-full bg-rose-300/25 blur-3xl" />
 
         <div className="relative grid items-center gap-8 lg:grid-cols-[1.15fr_1fr] lg:gap-12">
           <div>

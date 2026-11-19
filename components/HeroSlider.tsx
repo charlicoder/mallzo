@@ -42,7 +42,7 @@ export default function HeroSlider({ lang, category, slides }: { lang: Locale; c
         touchX.current = null;
         setPaused(false);
       }}
-      className="relative mb-6 h-48 overflow-hidden rounded-[1.75rem] bg-gradient-to-br from-[#fff3ec] via-[#ffe6da] to-[#fdd5c2] sm:h-60 lg:h-72"
+      className="relative mb-6 h-48 overflow-hidden rounded-[1.75rem] bg-gradient-to-br from-[#fff1f2] via-[#ffe0e4] to-[#ffcdd5] sm:h-60 lg:h-72"
     >
       {slides.map((s, k) => (
         <Link

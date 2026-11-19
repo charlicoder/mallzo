@@ -89,7 +89,7 @@ export default function SubscribePopup({ lang }: { lang: Locale }) {
   return (
     <div className="fixed inset-0 z-50 flex items-end justify-center bg-slate-900/50 p-0 backdrop-blur-sm sm:items-center sm:p-4" onMouseDown={(e) => e.target === e.currentTarget && close()}>
       <div role="dialog" aria-modal="true" aria-labelledby="sub-title" className="relative w-full max-w-md overflow-hidden rounded-t-3xl bg-white shadow-2xl sm:rounded-3xl">
-        <div className="h-1.5 bg-gradient-to-r from-[#ff8a4c] to-[#f2481b]" />
+        <div className="h-1.5 bg-gradient-to-r from-[#ff4d63] to-[#fb1730]" />
         <button type="button" onClick={close} aria-label={t.subClose} className="absolute end-3 top-4 grid h-9 w-9 place-items-center rounded-full text-slate-500 transition hover:bg-slate-100 hover:text-slate-900">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round"><path d="M6 6l12 12M18 6L6 18" /></svg>
         </button>

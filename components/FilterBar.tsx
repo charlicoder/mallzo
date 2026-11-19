@@ -82,7 +82,7 @@ export default function FilterBar({
               onChange={(e) => setText(e.target.value)}
               placeholder={t.searchPlaceholder}
               aria-label={t.searchAria}
-              className="h-12 w-full rounded-full border border-slate-200 bg-white ps-11 pe-4 text-[15px] outline-none placeholder:text-slate-400 focus:border-brand focus:ring-4 focus:ring-orange-100"
+              className="h-12 w-full rounded-full border border-slate-200 bg-white ps-11 pe-4 text-[15px] outline-none placeholder:text-slate-400 focus:border-brand focus:ring-4 focus:ring-rose-100"
             />
           </label>}
           {count !== undefined && (

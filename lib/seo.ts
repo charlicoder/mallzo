@@ -53,7 +53,7 @@ export const organizationLd = (): Json => ({
   "@id": abs("/#org"),
   name: SITE_NAME,
   url: abs("/"),
-  logo: abs("/icon"),
+  logo: abs("/icon.png"),
 });
 
 export const websiteLd = (): Json => ({

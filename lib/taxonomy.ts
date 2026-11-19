@@ -1,8 +1,9 @@
 // Storefront menu. Slugs must match productapi/catalog/taxonomy.py; names live in lib/i18n.ts.
 export type SubCategory = { slug: string; icon?: string };
-export type MenuCategory = { slug: string; subs: SubCategory[] };
+// `hidden` keeps a category out of the menu, home rows and sitemap while its page still works. Remove the flag to bring it back.
+export type MenuCategory = { slug: string; subs: SubCategory[]; hidden?: boolean };
 
-export const MENU: MenuCategory[] = [
+const ALL: MenuCategory[] = [
   {
     slug: "apparel",
     subs: ["suiting-blazers", "sweaters-cardigans", "tops-tees-blouses", "clothing", "pullovers"].map((slug) => ({ slug })),
@@ -45,14 +46,13 @@ export const MENU: MenuCategory[] = [
     subs: [
       { slug: "vitamins-supplements", icon: "💊" },
       { slug: "personal-care", icon: "🧼" },
-      { slug: "oral-care", icon: "🦷" },
       { slug: "wellness", icon: "🧘" },
-      { slug: "medical-first-aid", icon: "🩺" },
       { slug: "fitness-recovery", icon: "🏋️" },
     ],
   },
   {
     slug: "home-living",
+    hidden: true,
     subs: [
       { slug: "kitchen-dining", icon: "🍳" },
       { slug: "bedding-bath", icon: "🛏️" },
@@ -65,4 +65,5 @@ export const MENU: MenuCategory[] = [
   },
 ];
 
-export const findCategory = (slug: string) => MENU.find((c) => c.slug === slug);
+export const MENU = ALL.filter((c) => !c.hidden);
+export const findCategory = (slug: string) => ALL.find((c) => c.slug === slug);

@@ -60,7 +60,7 @@ export default function ProductView({ product, lang, shareUrl }: { product: Prod
                     fill
                     priority={i === 0}
                     sizes="(min-width:1024px) 45vw, 100vw"
-                    className="object-contain p-4"
+                    className="object-cover"
                   />
                 </div>
               ))}

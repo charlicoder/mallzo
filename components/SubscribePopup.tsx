@@ -5,6 +5,8 @@ import { LogoMark } from "./Logo";
 import { COUNTRIES, flag } from "@/lib/countries";
 import { dict, type Locale } from "@/lib/i18n";
 
+// Switched off for now. Set to true to turn the popup back on (no other change needed).
+const ENABLED = false;
 const SHOW_AFTER_MS = 20_000;
 const SNOOZE_MS = 7 * 24 * 3600 * 1000; // after a close, don't ask again for a week
 const KEY = "mz_subscribe";
@@ -35,6 +37,7 @@ export default function SubscribePopup({ lang }: { lang: Locale }) {
   const input = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
+    if (!ENABLED) return;
     const v = read();
     if (v === "done" || (v && Date.now() - Number(v) < SNOOZE_MS)) return;
     const id = setTimeout(() => {

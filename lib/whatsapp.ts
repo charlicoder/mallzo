@@ -2,9 +2,10 @@ import "server-only";
 import { createHmac, timingSafeEqual } from "node:crypto";
 import { NextResponse, type NextRequest } from "next/server";
 
-// Set WHATSAPP_VERIFY_TOKEN to a long random string and paste the same string into Meta's "Verify token"
-// box. The default is the value currently entered there, so the handshake works until you change both.
-const VERIFY_TOKEN = process.env.WHATSAPP_VERIFY_TOKEN ?? "https://mallzo.shop/wp/verify-token";
+// Must equal the "Verify token" typed in Meta's webhook settings. Set WHATSAPP_VERIFY_TOKEN to a long random
+// string and paste the same string into Meta. The default is the value currently entered there, so the
+// handshake works until you change both.
+const VERIFY_TOKEN = process.env.WHATSAPP_VERIFY_TOKEN?.trim() || "mallzo-whatsapp-verify-token";
 // Meta app secret (App settings → Basic). When set, POST bodies must carry a valid X-Hub-Signature-256.
 const APP_SECRET = process.env.WHATSAPP_APP_SECRET;
 

@@ -1,6 +1,8 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  // Meta calls the webhook as /wp/callback/ (trailing slash) and does not follow redirects.
+  skipTrailingSlashRedirect: true,
   images: {
     loader: "custom",
     loaderFile: "./lib/imageLoader.ts",

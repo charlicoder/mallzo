@@ -43,7 +43,7 @@ export default function ProductCard({ product, index = 0 }: { product: ProductCa
               sizes="(min-width:1280px) 24vw, (min-width:1024px) 30vw, (min-width:640px) 33vw, 50vw"
               priority={index < 4 && i === 0}
               loading={index < 8 && i === 0 ? "eager" : undefined}
-              className={`object-cover transition-opacity duration-500 ${i === active ? "opacity-100" : "opacity-0"}`}
+              className={`object-contain transition-opacity duration-500 ${i === active ? "opacity-100" : "opacity-0"}`}
             />
           );
         })}
